@@ -1,6 +1,20 @@
 import { promises as fs } from 'fs';
 import { resolve } from 'path';
 
+type Token = {
+
+};
+
+class Scanner {
+  constructor(source: string) {
+
+  }
+
+  scanTokens(): Array<Token> {
+    return [];
+  }
+};
+
 const run = (source: string): void => {
   const scanner: Scanner = new Scanner(source);
   const tokens: Array<Token> = scanner.scanTokens();
@@ -16,8 +30,7 @@ const runFile = async (path: string): Promise<void> => {
 
 const runPrompt = (): void => {
   const input = process.stdin;
+  const runData = (data: Buffer) => run(data.toString('utf8'));
 
-  input.on('data', (data) => {
-    run(data);
-  });
+  input.on('data', runData);
 };
