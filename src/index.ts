@@ -84,6 +84,7 @@ class Scanner {
       case '+': this.addToken(TokenType.PLUS); break;
       case ';': this.addToken(TokenType.SEMICOLON); break;
       case '*': this.addToken(TokenType.STAR); break;
+      default: Lox.error(this.line, "Unexpected character."); break;
     }
   }
 
