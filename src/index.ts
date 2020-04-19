@@ -98,22 +98,37 @@ class Scanner {
   }
 };
 
-const run = (source: string): void => {
-  const scanner: Scanner = new Scanner(source);
-  const tokens: Tokens = scanner.scanTokens();
+class Lox {
+  private static hadError: boolean;
 
-  tokens.forEach(console.log);
-};
+  static run(source: string): void {
+    const scanner: Scanner = new Scanner(source);
+    const tokens: Tokens = scanner.scanTokens();
 
-const runFile = async (path: string): Promise<void> => {
-  const filePath = resolve(__dirname, path);
-  const source = await fs.readFile(filePath, 'utf8');
-  run(source);
-};
+    tokens.forEach(console.log);
+  };
 
-const runPrompt = (): void => {
-  const input = process.stdin;
-  const runData = (data: Buffer) => run(data.toString('utf8'));
+  static async runFile(path: string): Promise<void> {
+    const filePath = resolve(__dirname, path);
+    const source = await fs.readFile(filePath, 'utf8');
+    this.run(source);
 
-  input.on('data', runData);
+    if (this.hadError) process.exit();
+  };
+
+  static runPrompt(): void {
+    const input = process.stdin;
+    const runData = (data: Buffer) => this.run(data.toString('utf8'));
+
+    input.on('data', runData);
+  };
+
+  static error(line: number, message: string): void {
+    this.report(line, "", message);
+  }
+
+  private static report(line: number, where: string, message: string): void {
+    console.log(`[line ${line}] Error${where}: ${message}`);
+    this.hadError = true;
+  }
 };
