@@ -88,7 +88,16 @@ export class Scanner {
       case '\n':
         this.line++;
         break;
-      default: Lox.error(this.line, 'Unexpected character.');
+      case '"':
+        this.string();
+        break;
+      default:
+        if (this.isDigit(char)) {
+          this.number();
+        } else {
+          Lox.error(this.line, 'Unexpected character.');
+        }
+
         break;
     };
   };
@@ -126,9 +135,54 @@ export class Scanner {
     return this.source.charAt(this.current - 1);
   };
 
-  private addToken(type: TokenType): void {
+  private addToken(type: TokenType, literal: string | number | undefined = undefined): void {
     const text: string = this.source.substring(this.start, this.current);
-    const token: Token = new Token(type, text, 'null', this.line);
+    const token: Token = new Token(type, text, literal, this.line);
     this.tokens.push(token);
   };
+
+  private string(): void {
+    while (this.peek() != '"' && !this.isAtEnd()) {
+      if (this.peek() === '\n') this.line++;
+      this.advance();
+    }
+
+    if (this.isAtEnd()) {
+      Lox.error(this.line, "Unterminated string.");
+      return;
+    }
+
+    this.advance();
+
+    const value = this.source.substring(this.start + 1, this.current - 1);
+    this.addToken(TokenType.STRING, value);
+  };
+
+  private isDigit(char: string) {
+    return char >= '0' && char <= '9';
+  }
+
+  private number(): void {
+    while (this.isDigit(this.peek())) {
+      this.advance();
+    }
+
+    // Look for a fractional part.
+    if (this.peek() == '.' && this.isDigit(this.peekNext())) {
+      // Consume the "."
+      this.advance();
+
+      while (this.isDigit(this.peek())) {
+        this.advance();
+      }
+    }
+
+    this.addToken(TokenType.NUMBER,
+      parseFloat(this.source.substring(this.start, this.current)));
+  }
+
+  private peekNext() {
+    if (this.current + 1 >= this.source.length) return '\0';
+    return this.source.charAt(this.current + 1);
+  }
 };

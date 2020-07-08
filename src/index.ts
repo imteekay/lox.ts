@@ -38,5 +38,5 @@ export class Lox {
   };
 };
 
-Lox.runFile('../examples/001.lox');
-// Lox.runPrompt();
+// Lox.runFile('../examples/001.lox');
+Lox.runPrompt();
