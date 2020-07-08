@@ -4,7 +4,7 @@ import { Tokens } from './token';
 import { Scanner } from './scanner';
 
 export class Lox {
-  private static hadError: boolean;
+  private static hadError: boolean = false;
 
   static run(source: string): void {
     const scanner: Scanner = new Scanner(source);

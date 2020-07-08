@@ -32,29 +32,71 @@ export class Scanner {
   };
 
   private scanToken(): void {
-    const c: string = this.advance();
-    switch (c) {
-      case '(': this.addToken(TokenType.LEFT_PAREN); break;
-      case ')': this.addToken(TokenType.RIGHT_PAREN); break;
-      case '{': this.addToken(TokenType.LEFT_BRACE); break;
-      case '}': this.addToken(TokenType.RIGHT_BRACE); break;
-      case ',': this.addToken(TokenType.COMMA); break;
-      case '.': this.addToken(TokenType.DOT); break;
-      case '-': this.addToken(TokenType.MINUS); break;
-      case '+': this.addToken(TokenType.PLUS); break;
-      case ';': this.addToken(TokenType.SEMICOLON); break;
-      case '*': this.addToken(TokenType.STAR); break;
-      case '!': this.addToken(this.match('=') ? TokenType.BANG_EQUAL : TokenType.BANG); break;
-      case '=': this.addToken(this.match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL); break;
-      case '<': this.addToken(this.match('=') ? TokenType.LESS_EQUAL : TokenType.LESS); break;
-      case '>': this.addToken(this.match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER); break;
-      case '/': this.handleSlashOperator(); break;
-      default: Lox.error(this.line, 'Unexpected character.'); break;
+    const char: string = this.advance();
+
+    switch (char) {
+      case '(':
+        this.addToken(TokenType.LEFT_PAREN);
+        break;
+      case ')':
+        this.addToken(TokenType.RIGHT_PAREN);
+        break;
+      case '{':
+        this.addToken(TokenType.LEFT_BRACE);
+        break;
+      case '}':
+        this.addToken(TokenType.RIGHT_BRACE);
+        break;
+      case ',':
+        this.addToken(TokenType.COMMA);
+        break;
+      case '.':
+        this.addToken(TokenType.DOT);
+        break;
+      case '-':
+        this.addToken(TokenType.MINUS);
+        break;
+      case '+':
+        this.addToken(TokenType.PLUS);
+        break;
+      case ';':
+        this.addToken(TokenType.SEMICOLON);
+        break;
+      case '*':
+        this.addToken(TokenType.STAR);
+        break;
+      case '!':
+        this.addToken(this.match('=') ? TokenType.BANG_EQUAL : TokenType.BANG);
+        break;
+      case '=':
+        this.addToken(this.match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL);
+        break;
+      case '<':
+        this.addToken(this.match('=') ? TokenType.LESS_EQUAL : TokenType.LESS);
+        break;
+      case '>':
+        this.addToken(this.match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
+        break;
+      case '/':
+        this.handleSlashOperator();
+        break;
+      case ' ':
+      case '\r':
+      case '\t':
+        // Ignore whitespace.
+        break;
+      case '\n':
+        this.line++;
+        break;
+      default: Lox.error(this.line, 'Unexpected character.');
+        break;
     };
   };
 
   private handleSlashOperator(): void {
     if (this.match('/')) {
+      // A comment goes until the end of the line.
+      // So we need to go to the end of the line.
       while (this.isEndOfLine()) {
         this.advance();
       }
