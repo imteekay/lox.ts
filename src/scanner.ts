@@ -7,6 +7,7 @@ export class Scanner {
   private start: number;
   private current: number;
   private line: number;
+  private keywords: Map<string, TokenType>;
 
   constructor(source: string) {
     this.source = source;
@@ -14,6 +15,7 @@ export class Scanner {
     this.start = 0;
     this.current = 0;
     this.line = 1;
+    this.keywords = this.buildKeywords();
   };
 
   scanTokens(): Tokens {
@@ -26,6 +28,29 @@ export class Scanner {
     this.tokens.push(token);
     return this.tokens;
   };
+
+  private buildKeywords(): Map<string, TokenType> {
+    const keywords: Map<string, TokenType> = new Map();
+
+    keywords.set("and", TokenType.AND);
+    keywords.set("class", TokenType.CLASS);
+    keywords.set("else", TokenType.ELSE);
+    keywords.set("false", TokenType.FALSE);
+    keywords.set("for", TokenType.FOR);
+    keywords.set("fun", TokenType.FUN);
+    keywords.set("if", TokenType.IF);
+    keywords.set("nil", TokenType.NIL);
+    keywords.set("or", TokenType.OR);
+    keywords.set("print", TokenType.PRINT);
+    keywords.set("return", TokenType.RETURN);
+    keywords.set("super", TokenType.SUPER);
+    keywords.set("this", TokenType.THIS);
+    keywords.set("true", TokenType.TRUE);
+    keywords.set("var", TokenType.VAR);
+    keywords.set("while", TokenType.WHILE);
+
+    return keywords;
+  }
 
   private isAtEnd(): boolean {
     return this.current >= this.source.length;
@@ -94,6 +119,8 @@ export class Scanner {
       default:
         if (this.isDigit(char)) {
           this.number();
+        } else if (this.isAlpha(char)) {
+          this.identifier();
         } else {
           Lox.error(this.line, 'Unexpected character.');
         }
@@ -101,6 +128,31 @@ export class Scanner {
         break;
     };
   };
+
+  private identifier(): void {
+    while (this.isAlphaNumeric(this.peek())) {
+      this.advance();
+    }
+
+    const text = this.source.substring(this.start, this.current);
+    const tokenType: TokenType | undefined = this.keywords.get(text);
+
+    if (tokenType) {
+      this.addToken(tokenType);
+    } else {
+      this.addToken(TokenType.IDENTIFIER);
+    }
+  }
+
+  private isAlpha(char: string): boolean {
+    return (char >= 'a' && char <= 'z') ||
+      (char >= 'A' && char <= 'Z') ||
+      char == '_';
+  }
+
+  private isAlphaNumeric(char: string): boolean {
+    return this.isAlpha(char) || this.isDigit(char);
+  }
 
   private handleSlashOperator(): void {
     if (this.match('/')) {
