@@ -1,0 +1,3 @@
+- static analysis
+  - binding / resolution: for each identifier, we find out where that name is defined and wire the two together
+    - this is where scope comes into play
