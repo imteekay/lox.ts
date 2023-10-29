@@ -6,13 +6,6 @@ import { Scanner } from './scanner';
 export class Lox {
   private static hadError: boolean = false;
 
-  static run(source: string): void {
-    const scanner: Scanner = new Scanner(source);
-    const tokens: Tokens = scanner.scanTokens();
-
-    tokens.forEach((token) => console.log(token));
-  }
-
   static async runFile(path: string): Promise<void> {
     const filePath = resolve(__dirname, path);
     const source = await fs.readFile(filePath, 'utf8');
@@ -26,6 +19,13 @@ export class Lox {
     const runData = (data: Buffer) => this.run(data.toString('utf8'));
 
     input.on('data', runData);
+  }
+
+  static run(source: string): void {
+    const scanner: Scanner = new Scanner(source);
+    const tokens: Tokens = scanner.scanTokens();
+
+    tokens.forEach((token) => console.log(token));
   }
 
   static error(line: number, message: string): void {
