@@ -1,3 +1,7 @@
 - static analysis
   - binding / resolution: for each identifier, we find out where that name is defined and wire the two together
     - this is where scope comes into play
+- lexical (lexicographic) errors
+  - it happends when the interpreter doesn't understand the characters to transform into a token
+  - when getting an error, it doesn't need to stop. We keep scanning the source code.
+    - we should get all possible errors in one go
