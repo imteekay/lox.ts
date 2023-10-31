@@ -20,12 +20,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/leandrotk/lox.ts.git"
+    "url": "git+https://github.com/imteekay/lox.ts.git"
   },
   "author": "TK",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/leandrotk/lox.ts/issues"
+    "url": "https://github.com/imteekay/lox.ts/issues"
   },
-  "homepage": "https://github.com/leandrotk/lox.ts#readme"
+  "homepage": "https://github.com/imteekay/lox.ts#readme"
 }
