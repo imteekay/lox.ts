@@ -139,13 +139,10 @@ export class Scanner {
     }
 
     const text = this.source.substring(this.start, this.current);
-    const tokenType: TokenType | undefined = this.keywords.get(text);
+    const tokenType: TokenType =
+      this.keywords.get(text) || TokenType.IDENTIFIER;
 
-    if (tokenType) {
-      this.addToken(tokenType);
-    } else {
-      this.addToken(TokenType.IDENTIFIER);
-    }
+    this.addToken(tokenType);
   }
 
   private isAlpha(char: string): boolean {
